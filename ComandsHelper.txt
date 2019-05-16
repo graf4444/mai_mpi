@@ -1,0 +1,9 @@
+mpicc -std=c99 lab1.c
+
+mpicc -std=c99 lab2.c -lm
+
+mpicc -std=c99 kp.c -lm
+
+mpirun -np 1 -maxtime 10 a.out
+
+for i in ./data_output_np_*; do for j in ./data_output_np_*; do if [ $i \< $j ]; then diff "$i" "$j"; fi; done; done;

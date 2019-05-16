@@ -6,7 +6,7 @@
 #include "mpi.h"
 
 const int ROW_NUM = 500;
-const int COUNT_ITER = 10000;
+const int COUNT_ITER = 15000;
 const int TAG = 0;
 
  #define max(a,b) \
@@ -166,6 +166,7 @@ int main(int argc, char **argv) {
     MPI_Comm_size(MPI_COMM_WORLD, &N_PROC);
     MPI_Comm_rank(MPI_COMM_WORLD, &PROC_ID);
 
+    double startTime = MPI_Wtime();
 
     shift = (int*)malloc(ROW_NUM * sizeof(int));
     length = (int*)malloc(ROW_NUM * sizeof(int));
@@ -204,7 +205,7 @@ int main(int argc, char **argv) {
     }
 
 
-    writeToFile("data_input.txt");
+    writeToFile("data_input.bin");
 
     int sizeBlock1;
     int sizeBlock2;
@@ -245,11 +246,26 @@ int main(int argc, char **argv) {
         }
     }
 
+    double endTime = MPI_Wtime();
+
     char outputFileName[1000];
-    sprintf(outputFileName, "data_output_np_%d.txt", N_PROC);
+    sprintf(outputFileName, "data_output_np_%d.bin", N_PROC);
     writeToFile(outputFileName);
 
     MPI_Buffer_detach(&buf, &bufSize);
+
+    char fileNameTt[1000];
+    sprintf(fileNameTt, "time_ROW_NUM_%d_COUNT_ITER_%d.txt", ROW_NUM, COUNT_ITER);
+    if (PROC_ID == 0 && N_PROC == 1) {
+        FILE* fs = fopen(fileNameTt, "w");
+        fclose(fs);
+    }
+    if (PROC_ID == 0) {
+        FILE* fs = fopen(fileNameTt, "ab");
+        fprintf(fs, "%d\t%.5f\n", N_PROC, endTime - startTime);
+        fclose(fs);
+    }
+
     fflush(stdout);
 
     MPI_Finalize();
