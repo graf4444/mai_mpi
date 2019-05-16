@@ -4,6 +4,10 @@ mpicc -std=c99 lab2.c -lm
 
 mpicc -std=c99 kp.c -lm
 
-mpirun -np 1 -maxtime 10 a.out
+mpirun -maxtime 20 -np 1 a.out
+
+for i in ./1/output_np_*; do for j in ./2/output_np_*; do if [ $i \< $j ]; then diff "$i" "$j"; fi; done; done;
+
+for i in ./output_np_*; do for j in ./output_np_*; do if [ $i \< $j ]; then diff "$i" "$j"; fi; done; done;
 
 for i in ./data_output_np_*; do for j in ./data_output_np_*; do if [ $i \< $j ]; then diff "$i" "$j"; fi; done; done;

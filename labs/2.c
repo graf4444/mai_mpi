@@ -39,8 +39,6 @@ void calcCurrentBlock(void) {
     // Process matrices from (DIM1, DIM2, FROM) to (DIM1, DIM2, TO)
     FROM = (DIM3 - 2) / N_PROC * PROC_ID + min((DIM3 - 2) % N_PROC, PROC_ID);
     TO = FROM + curBlockSize + 1;
-
-    // printf("N_PROC: %d,\tDIM3: %d,\tPROC_ID: %d,\tFROM: %d\t,TO: %d\n\n", N_PROC, DIM3, PROC_ID, FROM, TO);
 }
 
 
@@ -286,12 +284,25 @@ int main(int argc, char **argv) {
     writeMatrixToFile();
 
     double endTime = MPI_Wtime();
+    double solveTime = endTime - startTime;
 
-    MPI_Barrier(MPI_COMM_WORLD);
     if (PROC_ID == 0) {
-        double solveTime = endTime - startTime;
         printf("lead time = %lf\n", solveTime);
     }
+
+    // char fileNameTt[1000];
+    // sprintf(fileNameTt, "t_d1_%d_d2_%d_d3_%d.txt", DIM1, DIM2, DIM3);
+    // printf("\n\n%s\n\n",fileNameTt);
+    // if (PROC_ID == 0 && N_PROC == 1) {
+    //     FILE* fs = fopen(fileNameTt, "w");
+    //     fclose(fs);
+    // }
+    // if (PROC_ID == 0) {
+    //     FILE* fs = fopen(fileNameTt, "ab");
+    //     fprintf(fs, "%d\t%.5f\n", N_PROC, solveTime);
+    //     fclose(fs);
+    // }
+
     fflush(stdout);
     
     MPI_Finalize();

@@ -13,7 +13,7 @@ const int TAG = 0;
 const int WRITE_TAG = 1;
 
 
-const int COUNT_ITER = 100;
+const int COUNT_ITER = 1041;
 
 const int SIZE_DIM1 = 100;
 const int SIZE_DIM2 = 100;
@@ -40,8 +40,6 @@ void calcCurrentBlock(void) {
     // Process matrices from (DIM1, DIM2, FROM) to (DIM1, DIM2, TO)
     FROM = (DIM3 - 2) / N_PROC * PROC_ID + min((DIM3 - 2) % N_PROC, PROC_ID);
     TO = FROM + curBlockSize + 1;
-
-    printf("N_PROC: %d,\tDIM3: %d,\tPROC_ID: %d,\tFROM: %d\t,TO: %d\n\n", N_PROC, DIM3, PROC_ID, FROM, TO);
 }
 
 
@@ -172,7 +170,7 @@ int main(int argc, char **argv) {
                 if (k == 0 || i == 0 || j == 0 ||
                     k == DIM3 - 1 || i == DIM1 - 1 || j == DIM2 - 1)
                 {
-                    array[IDX(i, j, k)] = (i + j + k) * 10;
+                    array[IDX(i, j, k)] = (i + j + k);
                     auxiliaryArray[IDX(i, j, k)] = array[IDX(i, j, k)];
                 }
             }
@@ -228,24 +226,22 @@ int main(int argc, char **argv) {
     double endTime = MPI_Wtime();
     double solveTime = endTime - startTime;
 
-    MPI_Barrier(MPI_COMM_WORLD);
     if (PROC_ID == 0) {
         printf("lead time = %lf\n", solveTime);
     }
-
     
-    char fileNameTt[1000];
-    sprintf(fileNameTt, "t_d1_%d_d2_%d_d3_%d_iter_%d.txt", DIM1, DIM2, DIM3, COUNT_ITER);
-    printf("\n\n%s\n\n",fileNameTt);
-    if (PROC_ID == 0 && N_PROC == 1) {
-        FILE* fs = fopen(fileNameTt, "w");
-        fclose(fs);
-    }
-    if (PROC_ID == 0) {
-        FILE* fs = fopen(fileNameTt, "ab");
-        fprintf(fs, "%d\t%.5f\n", N_PROC, solveTime);
-        fclose(fs);
-    }
+    // char fileNameTt[1000];
+    // sprintf(fileNameTt, "t_d1_%d_d2_%d_d3_%d_iter_%d.txt", DIM1, DIM2, DIM3, COUNT_ITER);
+    // printf("\n\n%s\n\n",fileNameTt);
+    // if (PROC_ID == 0 && N_PROC == 1) {
+    //     FILE* fs = fopen(fileNameTt, "w");
+    //     fclose(fs);
+    // }
+    // if (PROC_ID == 0) {
+    //     FILE* fs = fopen(fileNameTt, "ab");
+    //     fprintf(fs, "%d\t%.5f\n", N_PROC, solveTime);
+    //     fclose(fs);
+    // }
 
     fflush(stdout);
     

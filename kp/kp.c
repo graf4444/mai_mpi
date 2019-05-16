@@ -96,8 +96,8 @@ void writeMatrixBinary(FILE *f, int from, int to) {
 }
 
 void writeMatrix(FILE *f, int from, int to) {
-    writeMatrixBinary(f, from, to);
-    // writeMatrixText(f, from, to);
+    // writeMatrixBinary(f, from, to);
+    writeMatrixText(f, from, to);
 }
 
 void writeToFile(const char* output) {
@@ -205,7 +205,7 @@ int main(int argc, char **argv) {
     }
 
 
-    writeToFile("data_input.bin");
+    writeToFile("data_input.txt");
 
     int sizeBlock1;
     int sizeBlock2;
@@ -249,7 +249,7 @@ int main(int argc, char **argv) {
     double endTime = MPI_Wtime();
 
     char outputFileName[1000];
-    sprintf(outputFileName, "data_output_np_%d.bin", N_PROC);
+    sprintf(outputFileName, "data_output_np_%d.txt", N_PROC);
     writeToFile(outputFileName);
 
     MPI_Buffer_detach(&buf, &bufSize);
